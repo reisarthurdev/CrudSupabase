@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CRUD</title>
+</head>
+<body>
+    <h1 style="text-align: center;">CRUD</h1>
+
+    <h3>Cadastrar Usuário</h3>
+    <form id="formularioEnviar">
+        <label>Nome: </label>
+        <input type="text" id="nome" placeholder="Seu nome"><br><br>
+
+        <label>Idade: </label>
+        <input type="text" id="idade" placeholder="Sua idade"><br><br>
+
+        <input type="submit" value="Enviar"><br><br>
+    </form>
+
+    <h3>Pesquisar Usuário</h3>
+    <form id="formularioPesquisar">
+        <label>Pesquisar por nome: </label>
+        <input type="text" id="pesquisar" placeholder="Pedro, João..."><br><br>
+
+        <input type="submit" value="Pesquisar"><br><br>
+    </form>
+
+    <h2 id="resultadoPesquisar"></h2>
+
+    <h3>Excluir Usuário</h3>
+    <form id="formularioExcluir">
+        <label>Excluir por nome: </label>
+        <input type="text" id="excluir" placeholder="Pedro, João..."><br><br>
+
+        <input type="submit" value="Excluir"><br><br>
+    </form>
+
+    <h3>Editar Usuário</h3>
+    <form id="formularioEditar">
+        <label>Nome já cadastrado: </label>
+        <input type="text" id="nomeEditar" placeholder="Pedro, João..."><br><br>
+
+        <label>Novo nome: </label>
+        <input type="text" id="alterar" placeholder="Novo nome"><br><br>
+
+        <label>Nova idade: </label>
+        <input type="text" id="idadeEditar" placeholder="Nova idade"><br><br>
+
+        <input type="submit" value="Alterar">
+    </form>
+
+    <h2 id="resultadoEditar"></h2>
+
+    <script type="module">
+        const dados = new Map();
+
+        const formularioEnviar = document.getElementById('formularioEnviar');
+        formularioEnviar.addEventListener('submit', function(event) { event.preventDefault();
+
+            const nome = document.getElementById('nome').value;
+            const idade = document.getElementById('idade').value;
+
+            dados.set(nome, { nome: nome, idade: idade });
+
+            console.log(dados.get(nome));
+        });
+
+        const formularioPesquisar = document.getElementById('formularioPesquisar');
+        formularioPesquisar.addEventListener('submit', function(event) { event.preventDefault();
+
+            const nomePesquisado = document.getElementById('pesquisar').value;
+            const resultado = document.getElementById('resultadoPesquisar');
+
+            if(dados.has(nomePesquisado)) {
+                resultado.innerHTML = `Nome: ${dados.get(nomePesquisado).nome}<br>Idade: ${dados.get(nomePesquisado).idade}`;
+            } else {
+                resultado.innerHTML = "Pessoa não encontrada.";
+            }
+        });
+
+        const formularioExcluir = document.getElementById('formularioExcluir');
+        formularioExcluir.addEventListener('submit', function(event) { event.preventDefault();
+
+            const excluir = document.getElementById('excluir').value;
+
+            dados.delete(excluir);
+
+            console.log(dados.get(nome));
+        });
+
+        const formularioEditar = document.getElementById('formularioEditar');
+        formularioEditar.addEventListener('submit', function(event) { event.preventDefault();
+
+            const nomeAntigo = document.getElementById('nomeEditar').value;
+            const novoNome = document.getElementById('alterar').value;
+            const novaIdade = document.getElementById('idadeEditar').value;
+
+            const resultado = document.getElementById('resultadoEditar');
+
+            if (dados.has(nomeAntigo)) {
+                const usuario = dados.get(nomeAntigo);
+
+                dados.delete(nomeAntigo);
+
+                usuario.nome = novoNome;
+                usuario.idade = novaIdade;
+
+                dados.set(novoNome, usuario);
+
+                resultado.innerHTML = "Cadastro atualizado com sucesso!";
+            } else {
+                resultado.innerHTML = "Pessoa não encontrada.";
+            }
+        });
+    </script>
+</body>
+</html>
+Gbcersdm5SumaPmU

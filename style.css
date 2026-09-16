@@ -1,0 +1,4 @@
+@charset "UTF-8";
+@font-face { font-family: 'justsans'; src: url('justSans.woff') format('woff'); }
+
+* { color: #0A0A0A; font-family: justsans; }
