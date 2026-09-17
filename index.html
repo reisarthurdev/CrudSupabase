@@ -9,90 +9,109 @@
 <body>
     <h1 style="text-align: center;">CRUD</h1>
 
-    <h3>Cadastrar Usuário</h3>
-    <form id="formularioEnviar">
-        <label>Nome: </label>
-        <input type="text" id="nome" placeholder="Seu nome"><br><br>
+    <div class="colunas">
+        <div class="coluna">
+            <h3>Cadastrar Usuário</h3>
+            <form id="formularioEnviar">
+                <label>Nome: </label>
+                <input type="text" id="nome" placeholder="Seu nome"><br><br>
 
-        <label>Idade: </label>
-        <input type="text" id="idade" placeholder="Sua idade"><br><br>
+                <label>Idade: </label>
+                <input type="text" id="idade" placeholder="Sua idade"><br><br>
 
-        <input type="submit" value="Enviar"><br><br>
-    </form>
+                <input type="submit" value="Enviar"><br><br>
+            </form>
+        </div>
 
-    <h3>Pesquisar Usuário</h3>
-    <form id="formularioPesquisar">
-        <label>Pesquisar por nome: </label>
-        <input type="text" id="pesquisar" placeholder="Pedro, João..."><br><br>
+        <div class="coluna">
+            <h3>Pesquisar Usuário</h3>
+            <form id="formularioPesquisar">
+                <label>Pesquisar por nome: </label>
+                <input type="text" id="pesquisar" placeholder="Pedro, João..."><br><br>
 
-        <input type="submit" value="Pesquisar"><br><br>
-    </form>
+                <input type="submit" value="Pesquisar"><br><br>
+            </form>
+            <h2 id="resultadoPesquisar"></h2>
+        </div>
 
-    <h2 id="resultadoPesquisar"></h2>
+        <div class="coluna">
+            <h3>Excluir Usuário</h3>
+            <form id="formularioExcluir">
+                <label>Excluir por nome: </label>
+                <input type="text" id="excluir" placeholder="Pedro, João..."><br><br>
 
-    <h3>Excluir Usuário</h3>
-    <form id="formularioExcluir">
-        <label>Excluir por nome: </label>
-        <input type="text" id="excluir" placeholder="Pedro, João..."><br><br>
+                <input type="submit" value="Excluir"><br><br>
+            </form>
+        </div>
 
-        <input type="submit" value="Excluir"><br><br>
-    </form>
+        <div class="coluna">
+            <h3>Editar Usuário</h3>
+            <form id="formularioEditar">
+                <label>Nome já cadastrado: </label>
+                <input type="text" id="nomeEditar" placeholder="Pedro, João..."><br><br>
 
-    <h3>Editar Usuário</h3>
-    <form id="formularioEditar">
-        <label>Nome já cadastrado: </label>
-        <input type="text" id="nomeEditar" placeholder="Pedro, João..."><br><br>
+                <label>Novo nome: </label>
+                <input type="text" id="alterar" placeholder="Novo nome"><br><br>
 
-        <label>Novo nome: </label>
-        <input type="text" id="alterar" placeholder="Novo nome"><br><br>
+                <label>Nova idade: </label>
+                <input type="text" id="idadeEditar" placeholder="Nova idade"><br><br>
 
-        <label>Nova idade: </label>
-        <input type="text" id="idadeEditar" placeholder="Nova idade"><br><br>
-
-        <input type="submit" value="Alterar">
-    </form>
-
-    <h2 id="resultadoEditar"></h2>
+                <input type="submit" value="Alterar">
+            </form>
+        </div>
+    </div>
 
     <script type="module">
-        const dados = new Map();
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+        const supabaseUrl = 'https://bdselqtawasfdtipsyqf.supabase.co';
+        const supabaseKey = 'sb_publishable_kgTKwX8A-hqht2NsrnGThw_YPP4uHvF';
+        const supabase = createClient(supabaseUrl, supabaseKey);
 
         const formularioEnviar = document.getElementById('formularioEnviar');
-        formularioEnviar.addEventListener('submit', function(event) { event.preventDefault();
+        formularioEnviar.addEventListener('submit', async function(event) { event.preventDefault();
 
             const nome = document.getElementById('nome').value;
             const idade = document.getElementById('idade').value;
 
-            dados.set(nome, { nome: nome, idade: idade });
+            const { error } = await supabase.from('pessoas').insert({ nome, idade });
 
-            console.log(dados.get(nome));
+            if (error) {
+                console.error(error);
+            } else {
+                console.log('Cadastrado:', nome, idade);
+            }
         });
 
         const formularioPesquisar = document.getElementById('formularioPesquisar');
-        formularioPesquisar.addEventListener('submit', function(event) { event.preventDefault();
+        formularioPesquisar.addEventListener('submit', async function(event) { event.preventDefault();
 
             const nomePesquisado = document.getElementById('pesquisar').value;
             const resultado = document.getElementById('resultadoPesquisar');
 
-            if(dados.has(nomePesquisado)) {
-                resultado.innerHTML = `Nome: ${dados.get(nomePesquisado).nome}<br>Idade: ${dados.get(nomePesquisado).idade}`;
-            } else {
+            const { data, error } = await supabase.from('pessoas').select('*').eq('nome', nomePesquisado);
+
+            if (error || !data || data.length === 0) {
                 resultado.innerHTML = "Pessoa não encontrada.";
+            } else {
+                resultado.innerHTML = `Nome: ${data[0].nome}<br>Idade: ${data[0].idade}`;
             }
         });
 
         const formularioExcluir = document.getElementById('formularioExcluir');
-        formularioExcluir.addEventListener('submit', function(event) { event.preventDefault();
+        formularioExcluir.addEventListener('submit', async function(event) { event.preventDefault();
 
             const excluir = document.getElementById('excluir').value;
 
-            dados.delete(excluir);
+            const { error } = await supabase.from('pessoas').delete().eq('nome', excluir);
 
-            console.log(dados.get(nome));
+            if (error) console.error(error);
+
+            console.log("Cadastro excluído.");
         });
 
         const formularioEditar = document.getElementById('formularioEditar');
-        formularioEditar.addEventListener('submit', function(event) { event.preventDefault();
+        formularioEditar.addEventListener('submit', async function(event) { event.preventDefault();
 
             const nomeAntigo = document.getElementById('nomeEditar').value;
             const novoNome = document.getElementById('alterar').value;
@@ -100,22 +119,24 @@
 
             const resultado = document.getElementById('resultadoEditar');
 
-            if (dados.has(nomeAntigo)) {
-                const usuario = dados.get(nomeAntigo);
+            const { data, error: erroBusca } = await supabase.from('pessoas').select('*').eq('nome', nomeAntigo);
 
-                dados.delete(nomeAntigo);
-
-                usuario.nome = novoNome;
-                usuario.idade = novaIdade;
-
-                dados.set(novoNome, usuario);
-
-                resultado.innerHTML = "Cadastro atualizado com sucesso!";
-            } else {
+            if (erroBusca || !data || data.length === 0) {
                 resultado.innerHTML = "Pessoa não encontrada.";
+                return;
             }
+
+            const { error: erroUpdate } = await supabase
+                .from('pessoas')
+                .update({ nome: novoNome, idade: novaIdade })
+                .eq('nome', nomeAntigo);
+            if (erroUpdate) {
+                resultado.innerHTML = "Erro ao atualizar.";
+                console.error(erroUpdate);
+            } else {
+                resultado.innerHTML = "Cadastro atualizado com sucesso!";
+            }
+            console.log("Cadastro editado.")
         });
     </script>
 </body>
-</html>
-Gbcersdm5SumaPmU

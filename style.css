@@ -1,4 +1,28 @@
 @charset "UTF-8";
 @font-face { font-family: 'justsans'; src: url('justSans.woff') format('woff'); }
 
-* { color: #0A0A0A; font-family: justsans; }
+* { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+
+body { margin: 0; padding: 40px 20px; background-color: #eaf6fd; color: #1a3a4a; }
+
+h1 { color: #1976a8; margin-bottom: 40px; }
+
+.colunas { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; align-items: flex-start; flex-wrap: wrap; }
+
+.coluna { flex: 1; min-width: 220px; background-color: #FFF; border: 1px solid #bfe3f5; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(25, 118, 168, 0.1); }
+
+.coluna h3 { color: #1976a8; margin-top: 0; border-bottom: 2px solid #bfe3f5; padding-bottom: 8px; }
+
+label { display: block; margin-bottom: 4px; font-size: 14px; color: #3a6c85; }
+
+input[type="text"], input[type="number"] { width: 100%; padding: 8px 10px; margin-bottom: 14px; border: 1px solid #a8d8ef; -radius: 6px; background-color: #f5fbfe; color: #1a3a4a; }
+
+input[type="text"]:focus, input[type="number"]:focus { outline: none; border-color: #1976a8; background-color: #FFF; }
+
+input[type="submit"] { width: 100%; padding: 10px; background-color: #4fc3e8; color: #FFF; border: none; border-radius: 6px; font-weight: bold;  transition: background-color .2s; }
+
+input[type="submit"]:hover { background-color: #1976a8; }
+
+h2 { font-size: 16px; color: #1a3a4a; background-color: #eaf6fd; padding: 10px; border-radius: 6px; min-height: 20px; }
+
+@media (max-width: 900px) { .colunas { flex-direction: column; } }
